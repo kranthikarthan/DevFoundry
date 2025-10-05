@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-
-type Integration = { id: string; name: string; category: string };
+import { IntegrationClient, type IntegrationSummary } from '@devportal/sdk';
 
 export function App(): JSX.Element {
-  const [integrations, setIntegrations] = useState<Integration[]>([]);
+  const [integrations, setIntegrations] = useState<IntegrationSummary[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/integrations')
-      .then(async (r) => {
-        if (!r.ok) throw new Error('Failed to load integrations');
-        const data = await r.json();
-        setIntegrations(data.integrations ?? []);
-      })
-      .catch((e) => setError(e.message));
+    const client = new IntegrationClient('/api');
+    client
+      .listIntegrations()
+      .then((data) => setIntegrations(data.integrations ?? []))
+      .catch((e: unknown) => {
+        const message = e instanceof Error ? e.message : 'Unknown error';
+        setError(message);
+      });
   }, []);
 
   return (

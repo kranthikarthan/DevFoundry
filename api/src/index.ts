@@ -33,7 +33,7 @@ export function createApp(): Express {
     const openapiYaml = fs.readFileSync(openapiPath, 'utf8');
     const openapiDoc = parse(openapiYaml);
     app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiDoc));
-  } catch (err) {
+  } catch {
     // If the OpenAPI file is missing in dev, keep the server running
     // so other routes still work.
   }
