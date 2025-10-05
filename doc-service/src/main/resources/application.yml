@@ -1,0 +1,36 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: doc-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.supernova.integration: DEBUG
+    org.springframework.web: DEBUG
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: Documentation Service for Developer Portal
+    version: 1.0.0

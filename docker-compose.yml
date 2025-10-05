@@ -1,0 +1,167 @@
+version: '3.8'
+
+services:
+  # Backend Services
+  integration-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.integration-service
+    container_name: integration-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - integration-network
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  performance-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.performance-service
+    container_name: performance-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - integration-network
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  doc-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.doc-service
+    container_name: doc-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - integration-network
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  metrics-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.metrics-service
+    container_name: metrics-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - integration-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: frontend
+    ports:
+      - "80:80"
+    networks:
+      - integration-network
+    depends_on:
+      - integration-service
+      - performance-service
+      - doc-service
+      - metrics-service
+
+  # Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=integration_portal
+      - POSTGRES_USER=portal_user
+      - POSTGRES_PASSWORD=portal_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - integration-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portal_user -d integration_portal"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Monitoring Stack
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - integration-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - integration-service
+      - performance-service
+      - doc-service
+      - metrics-service
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - integration-network
+    depends_on:
+      - prometheus
+
+networks:
+  integration-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  prometheus_data:
+  grafana_data:

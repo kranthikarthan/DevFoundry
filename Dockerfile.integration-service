@@ -1,0 +1,20 @@
+# Multi-stage build for Integration Service
+FROM eclipse-temurin:17-jdk-alpine as builder
+
+WORKDIR /app
+COPY integration-service/pom.xml .
+COPY pom.xml ../
+COPY integration-service/src ./src
+
+# Build the application
+RUN apk add --no-cache maven && \
+    mvn clean package -DskipTests
+
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+
+EXPOSE 8081
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

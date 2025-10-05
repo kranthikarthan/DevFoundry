@@ -1,0 +1,81 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Developer Integration Portal",
+    "tags": ["integration", "portal"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Integration Requests",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "integration_requests_total",
+            "legendFormat": "Total Requests"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Template Downloads",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "template_downloads_total",
+            "legendFormat": "Downloads"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Active Users",
+        "type": "singlestat",
+        "targets": [
+          {
+            "expr": "active_users_current"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "Available Templates",
+        "type": "singlestat",
+        "targets": [
+          {
+            "expr": "available_templates"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 6,
+          "y": 8
+        }
+      }
+    ],
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "refresh": "30s"
+  }
+}
