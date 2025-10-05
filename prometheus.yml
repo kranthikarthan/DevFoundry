@@ -1,0 +1,36 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'integration-service'
+    static_configs:
+      - targets: ['integration-service:8081']
+    scrape_interval: 10s
+    metrics_path: '/actuator/prometheus'
+
+  - job_name: 'performance-service'
+    static_configs:
+      - targets: ['performance-service:8082']
+    scrape_interval: 10s
+    metrics_path: '/actuator/prometheus'
+
+  - job_name: 'doc-service'
+    static_configs:
+      - targets: ['doc-service:8083']
+    scrape_interval: 10s
+    metrics_path: '/actuator/prometheus'
+
+  - job_name: 'metrics-service'
+    static_configs:
+      - targets: ['metrics-service:8084']
+    scrape_interval: 10s
+    metrics_path: '/actuator/prometheus'
