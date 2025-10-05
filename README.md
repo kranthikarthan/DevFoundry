@@ -28,5 +28,9 @@ npm test
 docker compose up --build
 ```
 
+## Examples
+- Spring Boot + Kafka: `examples/springboot-kafka`
+- Node.js + Kafka: `examples/nodejs-kafka`
+
 ## Contributing
 See `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
