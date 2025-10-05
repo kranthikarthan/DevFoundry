@@ -32,5 +32,15 @@ docker compose up --build
 - Spring Boot + Kafka: `examples/springboot-kafka`
 - Node.js + Kafka: `examples/nodejs-kafka`
 
+## Spring Templates
+Production-ready Spring Boot templates under `templates/spring`:
+- `common`: Observability, WebClient tuning, global error handling, OpenAPI
+- `kafka`: Producer/consumer skeleton with sane defaults
+- `postgres`: JPA + Flyway + Hikari pool tuned defaults
+- `redis`: Simple caching service example
+- `webhook`: Secure inbound webhooks with HMAC verification
+
+See `docs/INTEGRATIONS.md` for performance and reliability notes.
+
 ## Contributing
 See `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
