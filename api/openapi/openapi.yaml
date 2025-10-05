@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  title: Developer Integration Portal API
+  version: 0.1.0
+  description: Simple API for listing integrations and health checks.
+servers:
+  - url: http://localhost:3000
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+  /integrations:
+    get:
+      summary: List integrations
+      responses:
+        '200':
+          description: A list of integrations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  integrations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Integration'
+components:
+  schemas:
+    Integration:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string

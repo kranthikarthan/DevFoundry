@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: springboot-kafka-example
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: devportal-example
+      auto-offset-reset: earliest
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+server:
+  port: 8081

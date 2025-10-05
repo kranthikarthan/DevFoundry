@@ -1,0 +1,17 @@
+services:
+  api:
+    build: ./api
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+  web:
+    build: ./web
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
