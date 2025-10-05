@@ -1,0 +1,24 @@
+{
+  "name": "developer-integration-portal",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "engines": { "node": ">=20" },
+  "workspaces": [
+    "api",
+    "web",
+    "packages/sdk"
+  ],
+  "scripts": {
+    "dev": "run-p -l api:dev web:dev",
+    "api:dev": "npm run -w api dev",
+    "web:dev": "npm run -w web dev",
+    "build": "npm run -ws build",
+    "test": "npm run -ws test --if-present",
+    "lint": "npm run -ws lint --if-present",
+    "format": "npm run -ws format --if-present"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
